@@ -39,19 +39,22 @@ func (h *handler) Handle(update tgbotapi.Update) {
 	case GenerateMessage:
 		event, err := h.kgc.GetRandomEvent("msk", update.Message.From.UserName)
 		if err != nil {
-			log.Panic(err)
+			log.Print(err)
+			return
 		}
 		m = fmt.Sprintf("%s \n %s", event.Title, event.Site)
 	case ForTodayMessage:
 		event, err := h.kgc.GetEventForToday("msk", update.Message.From.UserName)
 		if err != nil {
-			log.Panic(err)
+			log.Print(err)
+			return
 		}
 		m = fmt.Sprintf("Event for today \n %s \n %s", event.Title, event.Site)
 	case ForTomorrowMessage:
 		event, err := h.kgc.GetEventForTomorrow("msk", update.Message.From.UserName)
 		if err != nil {
-			log.Panic(err)
+			log.Print(err)
+			return
 		}
 		m = fmt.Sprintf("Event for tomorrow \n %s \n %s", event.Title, event.Site)
 	case "/help":
@@ -66,7 +69,7 @@ func (h *handler) Handle(update tgbotapi.Update) {
 
 	_, err := h.bot.Send(msg)
 	if err != nil {
-		log.Panic(err)
+		log.Print(err)
 		return
 	}
 }

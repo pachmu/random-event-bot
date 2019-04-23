@@ -5,7 +5,7 @@
 
 2. create a config.yml file at ./
   
-  token: some_token
+     token: some_token
   
 3. run
 

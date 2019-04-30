@@ -6,14 +6,12 @@ import (
 	"path/filepath"
 )
 
-const configFile = "./config.yml"
-
 type Config struct {
 	Token string `json:"token"`
 }
 
-func GetConfig() (*Config, error) {
-	filename, err := filepath.Abs(configFile)
+func GetConfig(cfgPath string) (*Config, error) {
+	filename, err := filepath.Abs(cfgPath)
 	if err != nil {
 		return nil, err
 	}

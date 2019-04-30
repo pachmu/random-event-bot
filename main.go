@@ -1,14 +1,18 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"time"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
+var configPath = flag.String("config", "", "Path to config file")
+
 func main() {
-	config, err := GetConfig()
+	flag.Parse()
+	config, err := GetConfig(*configPath)
 	if err != nil {
 		log.Panic(err)
 		return

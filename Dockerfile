@@ -1,16 +1,21 @@
-FROM golang:onbuild
+FROM golang:1.12 as build_base
 
-RUN go get github.com/go-telegram-bot-api/telegram-bot-api
+WORKDIR /random-event-bot
+COPY go.mod go.sum ./
 
-RUN mkdir -p  /go/src/random_event_bot
-WORKDIR /go/src/random_event_bot
+RUN go mod download
 
-ADD main.go /go/src/random_event_bot
-ADD kudago_client.go /go/src/random_event_bot
-ADD handler.go /go/src/random_event_bot
-ADD config.go /go/src/random_event_bot
-ADD config.yml /go/src/random_event_bot
+FROM build_base as builder
 
-RUN cd /go/src/random_event_bot && go build -i -o bot random_event_bot
+WORKDIR /random-event-bot
+COPY . .
 
-ENTRYPOINT [ "/go/src/random_event_bot/bot", ">/go/src/random_event_bot/log" ]
+RUN go build
+
+FROM gcr.io/distroless/base
+
+COPY --from=builder /random-event-bot/random-event-bot /
+COPY --from=builder /random-event-bot/config.yml /etc/random-event-bot/config.yml
+
+ENTRYPOINT ["/random-event-bot"]
+CMD ["-config", "/etc/random-event-bot/config.yml"]
